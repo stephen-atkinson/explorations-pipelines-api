@@ -68,5 +68,18 @@ jobs:
 
     - run: echo "$PWD" 
     - run: ls -LR
-      
+
+  deploy:
+    strategy:
+      matrix:
+        environment: [{ "name": "Test", "needs" : "staging" }, { "name": "Sandbox", "needs" : "staging" }]
+    needs: ${{matrix.environment.needs}}
+    environment: ${{matrix.environment.name}}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Publish Artifact
+      uses: actions//download-artifact@v4
+      with:
+        name: ${{env.API_ARTIFACT_NAME}}
     
