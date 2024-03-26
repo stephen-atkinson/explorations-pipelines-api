@@ -72,7 +72,8 @@ jobs:
   deploy:
     strategy:
       matrix:
-        environment: [{ "name": "Test", "needs" : "staging" }, { "name": "Sandbox", "needs" : "staging" }]
+        environment: [{ name: "Test", needs : "staging" }, { name: "Sandbox", needs : "staging" }]
+        
     needs: ${{matrix.environment.needs}}
     environment: ${{matrix.environment.name}}
     runs-on: ubuntu-latest
