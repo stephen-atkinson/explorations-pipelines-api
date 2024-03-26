@@ -28,7 +28,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - run: cd ${{API_PROJECT_NAME}}
+      - run: cd ${{env.API_PROJECT_NAME}}
 
       - name: Install dependencies
         run: dotnet restore '${{env.API_PROJECT_NAME}}.csproj'
