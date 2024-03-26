@@ -46,7 +46,7 @@ jobs:
             needs: publish
           - environment: Production
             needs: staging
-    needs: ${{matrix.needs}}
+    needs: publish
     environment: ${{matrix.environment}}
     runs-on: ubuntu-latest
 
