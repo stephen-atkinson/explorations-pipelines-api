@@ -12,7 +12,7 @@ env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
   API_PROJECT_NAME: 'Explorations.Pipelines.Api'
   PUBLISH_OUTPUT_FOLDER: 'publish-output'
-  API_ARTIFACT_NAME: ${{env.API_PROJECT_NAME}}_Artifact-${{ github.event.pull_request.head.sha }}'
+  API_ARTIFACT_NAME: ${{API_PROJECT_NAME}}_Artifact-${{ github.event.pull_request.head.sha }}'
 
 jobs:
   publish:
