@@ -55,7 +55,7 @@ jobs:
 
 
   production:
-    needs: publish
+    needs: staging
     environment: Production
     runs-on: ubuntu-latest
 
