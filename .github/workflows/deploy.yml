@@ -35,13 +35,13 @@ jobs:
       - run: ls -LR
           
       - name: Publish
-        run: dotnet publish -c Release -o '../${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true
+        run: dotnet publish -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true
 
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{env.API_ARTIFACT_NAME}}
-          path: '../${{env.PUBLISH_OUTPUT_FOLDER}}'
+          path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
   staging:
     needs: publish
