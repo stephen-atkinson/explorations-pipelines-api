@@ -28,7 +28,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore '${{API_PROJECT_NAME}}/${{API_PROJECT_NAME}}.csproj'
+        run: dotnet build --configuration Release --no-restore '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj'
           
       - name: Publish
-        run: dotnet publish -c Release -o ../dotnet-webapp -r linux-x64 --self-contained true /p:UseAppHost=true '${{API_PROJECT_NAME}}/${{API_PROJECT_NAME}}.csproj'
+        run: dotnet publish -c Release -o ../dotnet-webapp -r linux-x64 --self-contained true /p:UseAppHost=true '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj'
