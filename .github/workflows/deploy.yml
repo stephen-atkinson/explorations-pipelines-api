@@ -38,44 +38,16 @@ jobs:
           name: ${{env.API_ARTIFACT_NAME}}
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
-  staging:
-    needs: publish
-    environment: Staging
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download Publish Artifact
-      uses: actions//download-artifact@v4
-      with:
-        name: ${{env.API_ARTIFACT_NAME}}
-
-
-    - run: echo "$PWD" 
-    - run: ls -LR
-
-
-  production:
-    needs: staging
-    environment: Production
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Download Publish Artifact
-      uses: actions//download-artifact@v4
-      with:
-        name: ${{env.API_ARTIFACT_NAME}}
-
-
-    - run: echo "$PWD" 
-    - run: ls -LR
-
   deploy:
     strategy:
       matrix:
-        environment: [{ name: "Test", needs : "staging" }, { name: "Sandbox", needs : "staging" }]
-        
-    needs: ${{matrix.environment.needs}}
-    environment: ${{matrix.environment.name}}
+        include:
+          - environment: Staging
+            needs: publish
+          - environment: Production
+            needs: staging
+    needs: ${{matrix.needs}}
+    environment: ${{matrix.environment}}
     runs-on: ubuntu-latest
 
     steps:
