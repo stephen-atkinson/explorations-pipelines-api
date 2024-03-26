@@ -19,20 +19,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo '${{ toJson(github) }}'
-      - run: echo "$PWD" 
-      - run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.head_commit.id }}" >> $GITHUB_ENV
-    
+      - name: Concat environment variables
+        run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.head_commit.id }}" >> $GITHUB_ENV
+
       - uses: actions/checkout@v3
       
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - run: cd ${{env.API_PROJECT_NAME}}
-      - run: echo "$PWD" 
-      - run: ls -LR
           
       - name: Publish
         run: dotnet publish -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true
@@ -45,6 +40,23 @@ jobs:
 
   staging:
     needs: publish
+    environment: Staging
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Publish Artifact
+      uses: actions//download-artifact@v4
+      with:
+        name: ${{env.API_ARTIFACT_NAME}}
+
+
+    - run: echo "$PWD" 
+    - run: ls -LR
+
+
+  production:
+    needs: publish
+    environment: Production
     runs-on: ubuntu-latest
 
     steps:
