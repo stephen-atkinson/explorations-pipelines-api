@@ -33,15 +33,9 @@ jobs:
       - run: cd ${{env.API_PROJECT_NAME}}
       - run: echo "$PWD" 
       - run: ls -LR
-
-      - name: Install dependencies
-        run: dotnet restore '${{env.API_PROJECT_NAME}}.csproj'
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore '${{env.API_PROJECT_NAME}}.csproj'
           
       - name: Publish
-        run: dotnet publish -c Release -o '../${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true '${{env.API_PROJECT_NAME}}.csproj'
+        run: dotnet publish -c Release -o '../${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true
 
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
@@ -58,5 +52,9 @@ jobs:
       uses: actions//download-artifact@v4
       with:
         name: ${{env.API_ARTIFACT_NAME}}
+
+
+    - run: echo "$PWD" 
+    - run: ls -LR
       
     
