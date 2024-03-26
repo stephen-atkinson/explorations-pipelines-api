@@ -11,6 +11,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: '.' # Set this to the path to your web app project, defaults to the repository root:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
   API_PROJECT_NAME: 'Explorations.Pipelines.Api'
+  PUBLISH_OUTPUT_FOLDER: 'publish-output'
+  API_ARTIFACT_NAME: ${{env.API_PROJECT_NAME}}_Artifact-${{ github.event.pull_request.head.sha }}'
 
 jobs:
   publish:
@@ -31,4 +33,22 @@ jobs:
         run: dotnet build --configuration Release --no-restore '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj'
           
       - name: Publish
-        run: dotnet publish -c Release -o ../dotnet-webapp -r linux-x64 --self-contained true /p:UseAppHost=true '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj'
+        run: dotnet publish -c Release -o '../${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj'
+
+      - name: Upload Publish Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.API_ARTIFACT_NAME}}
+          path: '../${{env.PUBLISH_OUTPUT_FOLDER}}'
+
+  staging:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Publish Artifact
+      uses: actions//download-artifact@v4
+      with:
+        name: ${{env.API_ARTIFACT_NAME}}
+      
+    
