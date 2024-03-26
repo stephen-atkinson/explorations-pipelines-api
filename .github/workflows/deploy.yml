@@ -20,8 +20,8 @@ jobs:
 
     steps:
       - run: echo '${{ toJson(github) }}'
-      - run: dir 
-      - run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+      - run: echo "$PWD" 
+      - run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.head_commit.id }}" >> $GITHUB_ENV
     
       - uses: actions/checkout@v3
       
