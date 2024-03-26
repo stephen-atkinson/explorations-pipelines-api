@@ -31,6 +31,8 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - run: cd ${{env.API_PROJECT_NAME}}
+      - run: echo "$PWD" 
+      - run: ls -LR
 
       - name: Install dependencies
         run: dotnet restore '${{env.API_PROJECT_NAME}}.csproj'
