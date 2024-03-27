@@ -39,21 +39,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
-      - name: Download Publish Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.API_PROJECT_NAME}}
-  
-      - run: echo "$PWD" 
-      - run: ls -LR
-
-      - uses: azure/webapps-deploy@v2
-        name: Deploy
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: .
+      - uses: actions/deploy@v1
 
   production:
     needs: staging
