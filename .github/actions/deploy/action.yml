@@ -1,11 +1,11 @@
 name: 'Deploy to environment'
 description: 'Deploys the artifact to the hosted environment'
 inputs:
-  - azure-publish-profile:
+  azure-publish-profile:
     required: true
-  - artifact-name:
+  artifact-name:
     required: true
-  - azure-webapp-name:
+  azure-webapp-name:
     required: true
 runs:
   using: "composite"
