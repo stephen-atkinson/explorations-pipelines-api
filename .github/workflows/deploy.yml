@@ -17,13 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Concat environment variables
-        run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.head_commit.id }}" >> $GITHUB_ENV
-
+    
       - uses: actions/checkout@v4
       
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           
@@ -32,8 +30,8 @@ jobs:
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{env.API_ARTIFACT_NAME}}
-          path: '${{env.PUBLISH_OUTPUT_FOLDER}}/'
+          name: ${{env.API_PROJECT_NAME}}
+          path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
   staging:
     needs: publish
@@ -43,9 +41,9 @@ jobs:
     steps:
     
       - name: Download Publish Artifact
-        uses: actions//download-artifact@v4
+        uses: actions/download-artifact@v4
         with:
-          name: ${{env.API_ARTIFACT_NAME}}
+          name: ${{env.API_PROJECT_NAME}}
   
       - run: echo "$PWD" 
       - run: ls -LR
@@ -64,7 +62,7 @@ jobs:
 
     steps:
     - name: Download Publish Artifact
-      uses: actions//download-artifact@v4
+      uses: actions/download-artifact@v4
       with:
         name: ${{env.API_ARTIFACT_NAME}}
 
