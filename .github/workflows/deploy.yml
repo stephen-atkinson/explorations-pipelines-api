@@ -40,9 +40,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: dir
-      - run: ls -d
-      - uses: ./.github/actions/deploy.yml
+      - run: echo "$PWD" 
+      - run: ls -LR
+      - uses: .github/actions/deploy.yml@v1
 
   production:
     needs: staging
