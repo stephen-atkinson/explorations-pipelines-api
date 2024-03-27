@@ -39,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: dir
       - uses: ./.github/actions/deploy.yml
 
   production:
