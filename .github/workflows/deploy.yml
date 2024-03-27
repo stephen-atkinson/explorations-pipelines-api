@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: ./.github/actions/deploy
+      - uses: ./.github/actions/deploy.yml
 
   production:
     needs: staging
