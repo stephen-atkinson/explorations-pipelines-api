@@ -1,5 +1,12 @@
 name: 'Deploy to environment'
-description: 'Deploys the a'
+description: 'Deploys the artifact to the hosted environment'
+inputs:
+  - azure-publish-profile:
+    required: true
+  - artifact-name:
+    required: true
+  - azure-webapp-name:
+    required: true
 runs:
   using: "composite"
   steps:
@@ -7,11 +14,11 @@ runs:
       - name: Download Publish Artifact
         uses: actions/download-artifact@v4
         with:
-          name: ${{env.API_PROJECT_NAME}}
+          name: ${{inputs.artifact-name}}
   
       - uses: azure/webapps-deploy@v2
         name: Deploy
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          app-name: ${{inputs.azure-webapp-name}}
+          publish-profile: ${{inputs.azure-publish-profile}}
           package: .
