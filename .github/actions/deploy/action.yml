@@ -16,13 +16,10 @@ runs:
         with:
           name: ${{inputs.artifact-name}}
           path: artifacts/${{inputs.artifact-name}}
-
-      - shell: bash
-        run: cd artifacts/${{inputs.artifact-name}}
   
       - uses: azure/webapps-deploy@v2
         name: Deploy
         with:
           app-name: ${{inputs.azure-webapp-name}}
           publish-profile: ${{inputs.azure-publish-profile}}
-          package: .
+          package: artifacts/${{inputs.artifact-name}}
