@@ -43,7 +43,7 @@ jobs:
       - run: echo "$PWD" 
       - run: ls -a
       - run: ls -LR
-      - uses: .github/actions/deploy.yml
+      - uses: './.github/actions/deploy.yml'
 
   production:
     needs: staging
