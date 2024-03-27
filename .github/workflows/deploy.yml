@@ -40,6 +40,7 @@ jobs:
 
     steps:
       - run: dir
+      - run: ls -d
       - uses: ./.github/actions/deploy.yml
 
   production:
