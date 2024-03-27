@@ -39,6 +39,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - run: dir
       - run: ls -d
       - uses: ./.github/actions/deploy.yml
