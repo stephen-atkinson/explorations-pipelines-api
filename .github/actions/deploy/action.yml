@@ -17,7 +17,7 @@ runs:
           name: ${{inputs.artifact-name}}
           path: artifacts/${{inputs.artifact-name}}
 
-      - run: CD 'artifacts/${{inputs.artifact-name}}'
+      - run: cd artifacts/${{inputs.artifact-name}}
   
       - uses: azure/webapps-deploy@v2
         name: Deploy
