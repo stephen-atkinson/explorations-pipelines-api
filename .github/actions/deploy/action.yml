@@ -15,6 +15,7 @@ runs:
         uses: actions/download-artifact@v4
         with:
           name: ${{inputs.artifact-name}}
+          path: artifacts/${{inputs.artifact-name}}
   
       - uses: azure/webapps-deploy@v2
         name: Deploy
