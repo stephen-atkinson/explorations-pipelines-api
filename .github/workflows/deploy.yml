@@ -20,7 +20,7 @@ jobs:
       - name: Concat environment variables
         run: echo "API_ARTIFACT_NAME=${{env.API_PROJECT_NAME}}-${{ github.event.head_commit.id }}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
@@ -28,8 +28,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
           
       - name: Publish
-        run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' -r linux-x64 --self-contained true /p:UseAppHost=true
-
+        run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}'
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
         with:
