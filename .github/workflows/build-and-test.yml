@@ -22,7 +22,7 @@ jobs:
 
       - name: Ensure Stephen Atkinson NuGet Source
         run: |
-          dotnet nuget add source ${{ env.STEPHEN_ATKINSON_NUGET_SOURCE }} \
+          dotnet nuget add source ${{ vars.STEPHEN_ATKINSON_NUGET_SOURCE }} \
             -n stephen.atkinson \
             -u ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} \
             -p ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT  }} \
