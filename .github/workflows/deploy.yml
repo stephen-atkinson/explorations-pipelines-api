@@ -24,6 +24,14 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Ensure Stephen Atkinson NuGet Source
+        run: |
+          dotnet nuget add source ${{ vars.STEPHEN_ATKINSON_NUGET_SOURCE }} \
+            -n stephen.atkinson \
+            -u ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} \
+            -p ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT  }} \
+            --store-password-in-clear-text
           
       - name: Publish
         run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}'
