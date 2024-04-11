@@ -79,7 +79,7 @@ jobs:
           path: artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
 
       - name: Migrate Database
-        run: ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
+        run: chmod +x ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
 
       - name: Deploy API to Azure
         uses: ./.github/actions/deploy
