@@ -1,0 +1,19 @@
+name: 'Migrate Database'
+description: 'Migrates the database to the latest version using an EF bundle.
+inputs:
+  database-connectionstring:
+    required: true
+runs:
+  using: "composite"
+  steps:
+
+      - name: Download EF Bundle Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: efbundle
+          path: artifacts/efbundle
+
+      - name: Migrate Database
+        run: | 
+          chmod +x ./artifacts/efbundle/efbundle
+          ./artifacts/efbundle/efbundle --connection "${{ inputs.database-connectionstring }}"
