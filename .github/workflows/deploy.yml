@@ -74,7 +74,9 @@ jobs:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-          database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
+          database-connectionstring: ${{ secrets.DATABASE_CONNECTIONSTRING }}
+          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
+
 
   production:
     needs: staging
@@ -92,5 +94,6 @@ jobs:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-          database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
+          database-connectionstring: ${{ secrets.DATABASE_CONNECTIONSTRING }}
+          azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
     
