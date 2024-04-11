@@ -9,7 +9,7 @@ env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
   API_PROJECT_NAME: 'Explorations.Pipelines.Api'
   PUBLISH_OUTPUT_FOLDER: 'publish-output'
-  EF_MIGRATIONS_BUNDLE_NAME: efbundle
+  EF_MIGRATIONS_BUNDLE_NAME: 'efbundle'
 
 jobs:
   publish:
