@@ -52,7 +52,7 @@ jobs:
           name: ${{env.API_PROJECT_NAME}}
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
-      - name: Update EF Migrations bundle
+      - name: Upload EF Migrations Bundle Artifact
         uses: actions/upload-artifact@v4
         with:
           name: efbundle
@@ -65,6 +65,9 @@ jobs:
 
     steps:
     
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Deploy
         uses: ./.github/actions/deploy
         with:
@@ -79,6 +82,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Deploy
         uses: ./.github/actions/deploy
