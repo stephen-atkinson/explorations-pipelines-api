@@ -42,6 +42,9 @@ jobs:
           
       - name: Publish
         run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' --no-build
+
+      - name: Bundle EF Migrations
+        run: dotnet ef migrations bundle -r linux-x64 --project ${{env.API_PROJECT_NAME}}
         
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
@@ -49,14 +52,11 @@ jobs:
           name: ${{env.API_PROJECT_NAME}}
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
-      - name: Bundle EF Migrations
-        run: dotnet ef migrations bundle -r linux-x64 --project ${{env.API_PROJECT_NAME}}
-
       - name: Update EF Migrations bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-          path: .
+          path: ./${{env.EF_MIGRATIONS_BUNDLE_NAME}}
 
   staging:
     needs: publish
