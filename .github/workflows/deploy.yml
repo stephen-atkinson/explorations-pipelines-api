@@ -55,8 +55,8 @@ jobs:
       - name: Update EF Migrations bundle
         uses: actions/upload-artifact@v4
         with:
-          name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-          path: ./${{env.EF_MIGRATIONS_BUNDLE_NAME}}
+          name: efbundle
+          path: ./efbundle
 
   staging:
     needs: publish
@@ -71,25 +71,18 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Download EF Bundle Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-          path: artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-
-      - name: Migrate Database
-        run: | 
-          chmod +x ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-          ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection "${{ secrets.DATABASE_CONNECTIONSTRING }}"
         
-
       - name: Deploy API to Azure
         uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: Migrate Database
+        uses: ./.github/actions/migrate-database
+        with:
+          database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
 
   production:
     needs: staging
@@ -99,10 +92,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
       - name: Deploy API to Azure
         uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: Migrate Database
+        uses: ./.github/actions/migrate-database
+        with:
+          database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
     
