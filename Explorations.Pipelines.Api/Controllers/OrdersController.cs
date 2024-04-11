@@ -1,6 +1,8 @@
+using Explorations.Pipelines.Api.Database;
 using Explorations.Pipelines.Api.Models;
 using Explorations.Pipelines.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Explorations.Pipelines.Api.Controllers;
 
@@ -8,17 +10,53 @@ namespace Explorations.Pipelines.Api.Controllers;
 [Route("[controller]")]
 public class OrdersController : ControllerBase
 {
+    private readonly OrdersDbContext _ordersDbContext;
+
+    public OrdersController(OrdersDbContext ordersDbContext)
+    {
+        _ordersDbContext = ordersDbContext;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult>  Create()
+    {
+        var order = new Order();
+
+        await _ordersDbContext.Orders.AddAsync(order);
+
+        await _ordersDbContext.SaveChangesAsync();
+
+        var dto = ToDto(order);
+
+        return Ok(dto);
+    }
+    
     [HttpGet("{id:int}")]
-    public IActionResult Get(int id) => Ok(new OrderDto { Id = id });
+    public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
+    {
+        var order = await _ordersDbContext.Orders.FindAsync([id], cancellationToken);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        var dto = ToDto(order);
+
+        return Ok(dto);
+    }
     
     [HttpGet]
-    public IActionResult Get([FromQuery] IEnumerable<int>? ids)
+    public async Task<IActionResult> Get([FromQuery] IEnumerable<int>? ids, CancellationToken cancellationToken)
     {
-        var orders = ids.EmptyIfNull()
-            .Select(id => new OrderDto { Id = id })
-            .ToArray();
+        var orders = await _ordersDbContext.Orders
+            .Where(o => ids.EmptyIfNull().Contains(o.Id))
+            .ToArrayAsync(cancellationToken);
 
-        return Ok(orders);
-    }  
+        var dtos = orders.Select(ToDto).ToArray();
+        
+        return Ok(dtos);
+    }
 
+    private static OrderDto ToDto(Order order) => new () { Id = order.Id };
 }
