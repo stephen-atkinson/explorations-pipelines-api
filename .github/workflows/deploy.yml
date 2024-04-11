@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    branches: [ main ]
 
 env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
   API_PROJECT_NAME: 'Explorations.Pipelines.Api'
   PUBLISH_OUTPUT_FOLDER: 'publish-output'
+  EF_MIGRATIONS_BUNDLE_NAME: efbundle
 
 jobs:
   publish:
@@ -24,14 +24,32 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup EF Tools
+        run: |
+          dotnet tool install --global dotnet-ef
+          dotnet tool restore
+
+      - name: Build
+        run: dotnet build '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release
           
       - name: Publish
-        run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}'
+        run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' --no-build
+        
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{env.API_PROJECT_NAME}}
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
+
+      - name: Bundle EF Migrations
+        run: dotnet ef migrations bundle -r ubuntu
+
+      - name: Update EF Migrations bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
+          path: .
 
   staging:
     needs: publish
@@ -41,12 +59,27 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
-      
+
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Download EF Bundle Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
+          path: artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
+
+      - name: Deploy API to Azure
       - uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
+
+      - name: Migrate Database
+        run: ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
 
   production:
     needs: staging
@@ -55,7 +88,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Deploy API to Azure
       - uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
