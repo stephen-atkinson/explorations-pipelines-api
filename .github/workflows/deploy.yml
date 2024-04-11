@@ -30,18 +30,21 @@ jobs:
           dotnet tool install --global dotnet-ef
           dotnet tool restore
 
-      - name: Build
-        run: dotnet build '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release
-
       - name: Add Stephen Atkinson NuGet
         uses: stephen-atkinson/add-nuget-source@v1
         with:
           source: ${{ vars.STEPHEN_ATKINSON_NUGET_SOURCE }}
           username: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
           password: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
+
+      - name: Build
+        run: dotnet build '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release
           
       - name: Publish
         run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' --no-build
+
+      - name: Bundle EF Migrations
+        run: dotnet ef migrations bundle -r linux-x64 --project ${{env.API_PROJECT_NAME}}
         
       - name: Upload Publish Artifact
         uses: actions/upload-artifact@v4
@@ -49,14 +52,11 @@ jobs:
           name: ${{env.API_PROJECT_NAME}}
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
-      - name: Bundle EF Migrations
-        run: dotnet ef migrations bundle -r ubuntu
-
       - name: Update EF Migrations bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
-          path: .
+          path: ./${{env.EF_MIGRATIONS_BUNDLE_NAME}}
 
   staging:
     needs: publish
@@ -78,15 +78,18 @@ jobs:
           name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
           path: artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
 
+      - name: Migrate Database
+        run: | 
+          chmod +x ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
+          ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection "${{ secrets.DATABASE_CONNECTIONSTRING }}"
+        
+
       - name: Deploy API to Azure
-      - uses: ./.github/actions/deploy
+        uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-
-      - name: Migrate Database
-        run: ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
 
   production:
     needs: staging
@@ -97,7 +100,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy API to Azure
-      - uses: ./.github/actions/deploy
+        uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
