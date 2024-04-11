@@ -50,7 +50,7 @@ jobs:
           path: ${{env.PUBLISH_OUTPUT_FOLDER}}
 
       - name: Bundle EF Migrations
-        run: dotnet ef migrations bundle -r ubuntu --project ${{env.API_PROJECT_NAME}}
+        run: dotnet ef migrations bundle -r linux-x64 --project ${{env.API_PROJECT_NAME}}
 
       - name: Update EF Migrations bundle
         uses: actions/upload-artifact@v4
