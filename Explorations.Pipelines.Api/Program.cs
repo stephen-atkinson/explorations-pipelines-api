@@ -17,7 +17,8 @@ builder.Services.AddDbContext<OrdersDbContext>((sp, b) =>
     var settings = sp.GetRequiredService<IOptions<DatabaseSettings>>().Value;
     
     b.UseSqlServer(
-        $"Server={settings.Server};Initial Catalog={settings.Name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Default;");
+        $"Server={settings.Server};Initial Catalog={settings.Name};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=Active Directory Default;",
+        c => c.EnableRetryOnFailure().UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 });
 
 var app = builder.Build();
