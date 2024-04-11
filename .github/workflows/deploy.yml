@@ -78,15 +78,15 @@ jobs:
           name: ${{env.EF_MIGRATIONS_BUNDLE_NAME}}
           path: artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}
 
+      - name: Migrate Database
+        run: ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}}/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
+
       - name: Deploy API to Azure
         uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-
-      - name: Migrate Database
-        run: ./artifacts/${{env.EF_MIGRATIONS_BUNDLE_NAME}} --connection ${{ secrets.DATABASE_CONNECTIONSTRING }}
 
   production:
     needs: staging
