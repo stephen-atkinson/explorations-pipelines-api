@@ -9,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.ConfigureOptions<RouteConfigOptions>();
+builder.Services.AddProblemDetails();
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 
@@ -22,6 +23,8 @@ builder.Services.AddDbContext<OrdersDbContext>((sp, b) =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI();
