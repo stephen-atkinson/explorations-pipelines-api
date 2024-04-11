@@ -1,5 +1,5 @@
 name: 'Migrate Database'
-description: 'Migrates the database to the latest version using an EF bundle.
+description: 'Migrates the database to the latest version using an EF bundle.'
 inputs:
   database-connectionstring:
     required: true
