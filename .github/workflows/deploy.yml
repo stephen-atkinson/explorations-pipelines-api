@@ -32,6 +32,13 @@ jobs:
 
       - name: Build
         run: dotnet build '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release
+
+      - name: Add Stephen Atkinson NuGet
+        uses: stephen-atkinson/add-nuget-source@v1
+        with:
+          source: ${{ vars.STEPHEN_ATKINSON_NUGET_SOURCE }}
+          username: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
+          password: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
           
       - name: Publish
         run: dotnet publish '${{env.API_PROJECT_NAME}}/${{env.API_PROJECT_NAME}}.csproj' -c Release -o '${{env.PUBLISH_OUTPUT_FOLDER}}' --no-build

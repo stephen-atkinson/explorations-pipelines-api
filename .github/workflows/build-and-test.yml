@@ -20,6 +20,13 @@ jobs:
       - name: Display dotnet version
         run: dotnet --version
 
+      - name: Add Stephen Atkinson NuGet
+        uses: stephen-atkinson/add-nuget-source@v1
+        with:
+          source: ${{ vars.STEPHEN_ATKINSON_NUGET_SOURCE }}
+          username: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
+          password: ${{ secrets.STEPHEN_ATKINSON_NUGET_PAT }} 
+
       - name: Restore dependencies
         run: dotnet restore
 
