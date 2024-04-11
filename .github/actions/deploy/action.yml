@@ -1,5 +1,5 @@
 name: 'Deploy to environment'
-description: 'Deploys the artifact to the hosted environment'
+description: 'Deploys the application to the hosted environment'
 inputs:
   azure-publish-profile:
     required: true
@@ -7,19 +7,41 @@ inputs:
     required: true
   azure-webapp-name:
     required: true
+  database-connectionstring:
+    required: true
 runs:
   using: "composite"
   steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login via Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Download Publish Artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{inputs.artifact-name}}
           path: artifacts/${{inputs.artifact-name}}
+
+      - name: Download EF Bundle Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: efbundle
+          path: artifacts/efbundle
   
-      - uses: azure/webapps-deploy@v2
-        name: Deploy
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v2
         with:
           app-name: ${{inputs.azure-webapp-name}}
           publish-profile: ${{inputs.azure-publish-profile}}
           package: artifacts/${{inputs.artifact-name}}
+
+      - name: Migrate Database
+        shell: bash
+        run: | 
+          chmod +x ./artifacts/efbundle/efbundle
+          ./artifacts/efbundle/efbundle --connection "${{ inputs.database-connectionstring }}"

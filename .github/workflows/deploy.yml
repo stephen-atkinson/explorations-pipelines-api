@@ -64,24 +64,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - uses: actions/checkout@v4
-
-      - name: "Login via Azure CLI"
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-      - name: Deploy API to Azure
+    
+      - name: Deploy
         uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-
-      - name: Migrate Database
-        uses: ./.github/actions/migrate-database
-        with:
           database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
 
   production:
@@ -90,22 +79,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
 
-      - name: "Login via Azure CLI"
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-      - name: Deploy API to Azure
+      - name: Deploy
         uses: ./.github/actions/deploy
         with:
           azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
-
-      - name: Migrate Database
-        uses: ./.github/actions/migrate-database
-        with:
           database-connectionstring: "${{ secrets.DATABASE_CONNECTIONSTRING }}"
     

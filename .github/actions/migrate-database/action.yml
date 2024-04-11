@@ -14,6 +14,7 @@ runs:
           path: artifacts/efbundle
 
       - name: Migrate Database
+        shell: base
         run: | 
           chmod +x ./artifacts/efbundle/efbundle
           ./artifacts/efbundle/efbundle --connection "${{ inputs.database-connectionstring }}"
