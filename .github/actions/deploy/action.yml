@@ -37,6 +37,9 @@ runs:
         with:
           name: efbundle
           path: artifacts/efbundle
+
+      - shell: bash
+        use: echo "${{ inputs.azure-webapp-name }}"
   
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
