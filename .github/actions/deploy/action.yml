@@ -1,8 +1,6 @@
 name: 'Deploy to environment'
 description: 'Deploys the application to the hosted environment'
 inputs:
-  azure-publish-profile:
-    required: true
   artifact-name:
     required: true
   azure-webapp-name:
