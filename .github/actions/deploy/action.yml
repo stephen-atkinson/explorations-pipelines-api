@@ -39,7 +39,10 @@ runs:
           path: artifacts/efbundle
 
       - shell: bash
-        use: echo "${{ inputs.azure-webapp-name }}"
+        run: echo "${{ toJSON(inputs) }}"
+
+      - shell: bash
+        run: echo "${{ inputs.azure-webapp-name }}"
   
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
