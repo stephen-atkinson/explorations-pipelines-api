@@ -42,7 +42,6 @@ runs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{inputs.azure-webapp-name}}
-          publish-profile: ${{inputs.azure-publish-profile}}
           package: artifacts/${{inputs.artifact-name}}
 
       - name: Migrate Database
