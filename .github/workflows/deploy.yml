@@ -75,7 +75,6 @@ jobs:
       - name: Deploy
         uses: ./.github/actions/deploy
         with:
-          azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
           azure-webapp-name: ${{ vars.AZURE_WEBAPP_NAME }}
           database-connectionstring: ${{ secrets.DATABASE_CONNECTIONSTRING }}
@@ -97,9 +96,8 @@ jobs:
       - name: Deploy
         uses: ./.github/actions/deploy
         with:
-          azure-publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           artifact-name: ${{env.API_PROJECT_NAME}}
-          azure-webapp-name: ${{ env.AZURE_WEBAPP_NAME }}
+          azure-webapp-name: ${{ vars.AZURE_WEBAPP_NAME }}
           database-connectionstring: ${{ secrets.DATABASE_CONNECTIONSTRING }}
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
