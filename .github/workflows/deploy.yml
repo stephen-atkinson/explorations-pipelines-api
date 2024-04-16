@@ -2,8 +2,12 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: main
   workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
 
 env:
   DOTNET_VERSION: '8.0.x' # The .NET SDK version to use
