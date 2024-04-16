@@ -58,5 +58,22 @@ public class OrdersController : ControllerBase
         return Ok(dtos);
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var order = await _ordersDbContext.Orders.FindAsync([id], cancellationToken);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        _ordersDbContext.Orders.Remove(order);
+
+        await _ordersDbContext.SaveChangesAsync(CancellationToken.None);
+
+        return NoContent();
+    }
+
     private static OrderDto ToDto(Order order) => new () { Id = order.Id };
 }
